@@ -1,0 +1,9 @@
+name: spec_ooo_rv32i
+compiler_exe: riscv64-unknown-elf-gcc
+objdump_exe: riscv64-unknown-elf-objdump
+ref_model_exe: sail_riscv_sim
+ref_model_type: sail
+udb_config: spec_ooo_rv32i.yaml
+linker_script: link.ld
+dut_include_dir: .
+include_priv_tests: true

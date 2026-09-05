@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "suite": {
+    "reference": "riscv-arch-test-act4",
+    "version": "4.0.0",
+    "framework_version": "0.3.0",
+    "ctp_revision": "a7c99303516f4e668f7488f172043392e23b9dfd"
+  },
+  "tools": {
+    "ruby": "3.4.9",
+    "uv": "0.11.6",
+    "udb_gem": "0.1.9",
+    "udb_lock_sha256": "05039e1ead7274668c34ca28a1078b0a51b58238653195e2099b87a36c5920f6",
+    "sail_riscv": "0.10",
+    "compiler": "riscv64-unknown-elf-gcc",
+    "compiler_minimum_major": 15,
+    "compiler_release": "2025.07.16",
+    "uv_lock_sha256": "9f3f7118c04b2b7ebf0e502c95649f612696845952564d86bf9db1af0c5ff244"
+  },
+  "harness": {
+    "directory": "verif/arch/act4",
+    "config": "test_config.yaml",
+    "required_files": [
+      "test_config.yaml",
+      "spec_ooo_rv32i.yaml",
+      "rvmodel_macros.h",
+      "link.ld",
+      "sail.json",
+      "rvtest_config.svh",
+      "rvtest_config.h"
+    ],
+    "upstream_example": "config/cores/cve2/cv32e20",
+    "invoke_from_suite": [
+      "make",
+      "CONFIG_FILES=<absolute-path>/verif/arch/act4/test_config.yaml"
+    ],
+    "excluded_features": ["interrupts", "timers", "coverage"]
+  }
+}

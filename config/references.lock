@@ -35,6 +35,15 @@
       "tree": "9c3e8dd72033216e5af34237764736ad12d0a689",
       "binary_sha256": "7cf474e373dfc1259a3004990ff44986025e952f1c8580e9413bed532caa53b9",
       "accessed": "2026-09-04"
+    },
+    {
+      "name": "riscv-arch-test-act4",
+      "kind": "git",
+      "url": "https://github.com/riscv/riscv-arch-test.git",
+      "version": "4.0.0",
+      "revision": "a7c99303516f4e668f7488f172043392e23b9dfd",
+      "tree": "0c059107fe6d92181f6ab251dc8a435b37e779fa",
+      "accessed": "2026-09-05"
     }
   ]
 }

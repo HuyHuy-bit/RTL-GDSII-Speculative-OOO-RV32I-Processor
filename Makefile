@@ -1,7 +1,9 @@
 PROFILE ?= s0-host
 LOCKSTEP_SPIKE ?= ../riscv-isa-sim/build/spike
+ACT4_CHECKOUT ?= out/deps/riscv-arch-test-4.0.0
+ACT4_SAIL ?= out/deps/sail-riscv-0.10/bin/sail_riscv_sim
 
-.PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check check-fast check nightly reference-check
+.PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check act4-check act4-upstream-check check-fast check nightly reference-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -31,7 +33,13 @@ lockstep-check:
 	@python3 -m unittest -v tests/test_lockstep.py
 	@python3 tools/run_lockstep_smoke.py --spike "$(LOCKSTEP_SPIKE)"
 
-check-fast: platform-check event-check memory-check lockstep-check
+act4-check:
+	@python3 tools/check_act4.py
+
+act4-upstream-check:
+	@python3 tools/check_act4.py --checkout "$(ACT4_CHECKOUT)" --sail "$(ACT4_SAIL)"
+
+check-fast: platform-check event-check memory-check lockstep-check act4-check
 	@python3 tools/check_s0.py
 	@git diff --check
 
