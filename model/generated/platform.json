@@ -1,0 +1,289 @@
+{
+  "source_sha256": "378dbc14e4dda2a3d833f0f238441c55efda7224b2f969dec7710ed2602532de",
+  "schema": 1,
+  "name": "spec_ooo_rv32i",
+  "xlen": 32,
+  "isa": {
+    "base": "RV32I",
+    "extensions": [
+      "Zicsr",
+      "Zifencei"
+    ],
+    "privilege_modes": [
+      "M"
+    ],
+    "privileged_spec": "1.13",
+    "ialign_bits": 32,
+    "endianness": "little",
+    "interrupts_enabled": false
+  },
+  "reset": {
+    "pc": "0x00000000",
+    "mtvec": "0x00000100",
+    "privilege": 3
+  },
+  "memory": {
+    "line_bytes": 32,
+    "regions": [
+      {
+        "name": "bram",
+        "base": "0x00000000",
+        "size": "0x00010000",
+        "read": true,
+        "write": true,
+        "execute": true,
+        "cacheable": true,
+        "idempotent": true
+      },
+      {
+        "name": "uart",
+        "base": "0x10000000",
+        "size": "0x00000010",
+        "read": true,
+        "write": true,
+        "execute": false,
+        "cacheable": false,
+        "idempotent": false
+      },
+      {
+        "name": "gpio",
+        "base": "0x10001000",
+        "size": "0x00000020",
+        "read": true,
+        "write": true,
+        "execute": false,
+        "cacheable": false,
+        "idempotent": false
+      }
+    ]
+  },
+  "csrs": [
+    {
+      "name": "mstatus",
+      "address": "0x300",
+      "access": "rw",
+      "reset": "0x00001800",
+      "write_mask": "0x00000088",
+      "fixed_mask": "0x00001800",
+      "fixed_value": "0x00001800"
+    },
+    {
+      "name": "misa",
+      "address": "0x301",
+      "access": "ro",
+      "reset": "0x40000100",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x40000100"
+    },
+    {
+      "name": "mie",
+      "address": "0x304",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mtvec",
+      "address": "0x305",
+      "access": "rw",
+      "reset": "0x00000100",
+      "write_mask": "0xfffffffc",
+      "fixed_mask": "0x00000003",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mstatush",
+      "address": "0x310",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mcountinhibit",
+      "address": "0x320",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0x00000005",
+      "fixed_mask": "0xfffffffa",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mscratch",
+      "address": "0x340",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mepc",
+      "address": "0x341",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xfffffffc",
+      "fixed_mask": "0x00000003",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mcause",
+      "address": "0x342",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mtval",
+      "address": "0x343",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mip",
+      "address": "0x344",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mcycle",
+      "address": "0xb00",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "minstret",
+      "address": "0xb02",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mcycleh",
+      "address": "0xb80",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "minstreth",
+      "address": "0xb82",
+      "access": "rw",
+      "reset": "0x00000000",
+      "write_mask": "0xffffffff",
+      "fixed_mask": "0x00000000",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mvendorid",
+      "address": "0xf11",
+      "access": "ro",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "marchid",
+      "address": "0xf12",
+      "access": "ro",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mimpid",
+      "address": "0xf13",
+      "access": "ro",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mhartid",
+      "address": "0xf14",
+      "access": "ro",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    },
+    {
+      "name": "mconfigptr",
+      "address": "0xf15",
+      "access": "ro",
+      "reset": "0x00000000",
+      "write_mask": "0x00000000",
+      "fixed_mask": "0xffffffff",
+      "fixed_value": "0x00000000"
+    }
+  ],
+  "synchronous_traps": [
+    {
+      "name": "instruction_address_misaligned",
+      "cause": 0,
+      "mtval": "faulting_target"
+    },
+    {
+      "name": "instruction_access_fault",
+      "cause": 1,
+      "mtval": "faulting_address"
+    },
+    {
+      "name": "illegal_instruction",
+      "cause": 2,
+      "mtval": "instruction_bits"
+    },
+    {
+      "name": "breakpoint",
+      "cause": 3,
+      "mtval": "faulting_pc"
+    },
+    {
+      "name": "load_address_misaligned",
+      "cause": 4,
+      "mtval": "effective_address"
+    },
+    {
+      "name": "load_access_fault",
+      "cause": 5,
+      "mtval": "effective_address"
+    },
+    {
+      "name": "store_address_misaligned",
+      "cause": 6,
+      "mtval": "effective_address"
+    },
+    {
+      "name": "store_access_fault",
+      "cause": 7,
+      "mtval": "effective_address"
+    },
+    {
+      "name": "environment_call_from_m_mode",
+      "cause": 11,
+      "mtval": "zero"
+    }
+  ]
+}
