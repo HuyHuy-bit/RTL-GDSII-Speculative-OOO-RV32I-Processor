@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "name": "commit_event_v0",
+  "slots": 2,
+  "max_csr_effects": 4,
+  "slot_fields": [
+    {"name": "valid", "width": 1},
+    {"name": "order", "width": 64},
+    {"name": "instruction", "width": 32},
+    {"name": "privilege", "width": 2},
+    {"name": "pc_before", "width": 32},
+    {"name": "pc_after", "width": 32},
+    {"name": "rs1_addr", "width": 5},
+    {"name": "rs1_value", "width": 32},
+    {"name": "rs2_addr", "width": 5},
+    {"name": "rs2_value", "width": 32},
+    {"name": "rd_addr", "width": 5},
+    {"name": "rd_value", "width": 32},
+    {"name": "rd_write_mask", "width": 32},
+    {"name": "trap", "width": 1},
+    {"name": "trap_cause", "width": 32},
+    {"name": "trap_value", "width": 32},
+    {"name": "retired", "width": 1},
+    {"name": "mem_valid", "width": 1},
+    {"name": "mem_address", "width": 32},
+    {"name": "mem_read_mask", "width": 4},
+    {"name": "mem_write_mask", "width": 4},
+    {"name": "mem_read_data", "width": 32},
+    {"name": "mem_write_data", "width": 32}
+  ],
+  "csr_fields": [
+    {"name": "valid", "width": 1},
+    {"name": "address", "width": 12},
+    {"name": "old_value", "width": 32},
+    {"name": "new_value", "width": 32},
+    {"name": "read_mask", "width": 32},
+    {"name": "write_mask", "width": 32},
+    {"name": "mask_reason", "width": 3}
+  ],
+  "csr_mask_reasons": {
+    "none": 0,
+    "instruction": 1,
+    "trap_entry": 2,
+    "mret": 3
+  },
+  "trap_entry_csrs": ["0x300", "0x341", "0x342", "0x343"],
+  "memory_lane_convention": "Mask bit n selects byte n of the aligned 32-bit word; selected data byte n occupies bits 8*n+7:8*n.",
+  "rvfi": {
+    "repository": "https://github.com/YosysHQ/riscv-formal.git",
+    "revision": "c992aa61fdfe0846c5ed90324c596202a1c69b76",
+    "document": "docs/source/rvfi.rst",
+    "mapping": {
+      "valid": "rvfi_valid",
+      "order": "rvfi_order",
+      "instruction": "rvfi_insn",
+      "trap": "rvfi_trap",
+      "privilege": "rvfi_mode",
+      "pc_before": "rvfi_pc_rdata",
+      "pc_after": "rvfi_pc_wdata",
+      "rs1_addr": "rvfi_rs1_addr",
+      "rs1_value": "rvfi_rs1_rdata",
+      "rs2_addr": "rvfi_rs2_addr",
+      "rs2_value": "rvfi_rs2_rdata",
+      "rd_addr": "rvfi_rd_addr",
+      "rd_value": "rvfi_rd_wdata",
+      "mem_address": "rvfi_mem_addr",
+      "mem_read_mask": "rvfi_mem_rmask",
+      "mem_write_mask": "rvfi_mem_wmask",
+      "mem_read_data": "rvfi_mem_rdata",
+      "mem_write_data": "rvfi_mem_wdata"
+    },
+    "deviations": [
+      "Valid trapped boundaries carry retired=0 so minstret behavior is explicit.",
+      "Events are contiguous and packed oldest first; no out-of-order RVFI channels are emitted.",
+      "RVFI ixl is fixed to RV32 and omitted from the event.",
+      "RVFI intr is omitted; synchronous trap entry is attached to the faulting event through pc_after and ordered CSR effects.",
+      "RVFI halt is omitted while halt reporting is unsupported.",
+      "The destination bit mask and trap cause/value are explicit event fields.",
+      "Up to four ordered CSR effects replace optional per-CSR RVFI signal groups.",
+      "Committed stores are reported at retirement even when the external write drains later."
+    ]
+  }
+}

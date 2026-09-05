@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "valid_cases": [
+    {
+      "name": "bubble",
+      "expected_order": 10,
+      "next_order": 10,
+      "packet": {"slots": [{}, {}]}
+    },
+    {
+      "name": "single_retirement",
+      "expected_order": 10,
+      "next_order": 11,
+      "packet": {
+        "slots": [
+          {"valid": 1, "order": 10, "instruction": 7340691, "privilege": 3, "pc_before": 256, "pc_after": 260, "rd_addr": 5, "rd_value": 7, "rd_write_mask": 4294967295, "retired": 1},
+          {}
+        ]
+      }
+    },
+    {
+      "name": "dual_retirement_register_and_store",
+      "expected_order": 20,
+      "next_order": 22,
+      "packet": {
+        "slots": [
+          {"valid": 1, "order": 20, "instruction": 7340691, "privilege": 3, "pc_before": 256, "pc_after": 260, "rd_addr": 5, "rd_value": 7, "rd_write_mask": 4294967295, "retired": 1},
+          {"valid": 1, "order": 21, "instruction": 5447715, "privilege": 3, "pc_before": 260, "pc_after": 264, "rs1_addr": 6, "rs1_value": 512, "rs2_addr": 5, "rs2_value": 7, "retired": 1, "mem_valid": 1, "mem_address": 512, "mem_write_mask": 15, "mem_write_data": 7}
+        ]
+      }
+    },
+    {
+      "name": "trapped_load",
+      "expected_order": 30,
+      "next_order": 31,
+      "packet": {
+        "slots": [
+          {
+            "valid": 1, "order": 30, "instruction": 205443, "privilege": 3, "pc_before": 512, "pc_after": 256,
+            "rs1_addr": 6, "rs1_value": 268443648, "trap": 1, "trap_cause": 5, "trap_value": 268443648,
+            "csr_effects": [
+              {"address": 768, "old_value": 6152, "new_value": 6272, "read_mask": 4294967295, "write_mask": 136, "mask_reason": "trap_entry"},
+              {"address": 833, "old_value": 0, "new_value": 512, "read_mask": 4294967295, "write_mask": 4294967292, "mask_reason": "trap_entry"},
+              {"address": 834, "old_value": 0, "new_value": 5, "read_mask": 4294967295, "write_mask": 4294967295, "mask_reason": "trap_entry"},
+              {"address": 835, "old_value": 0, "new_value": 268443648, "read_mask": 4294967295, "write_mask": 4294967295, "mask_reason": "trap_entry"}
+            ]
+          },
+          {}
+        ]
+      }
+    },
+    {
+      "name": "buffered_committed_store",
+      "expected_order": 40,
+      "next_order": 41,
+      "packet": {
+        "slots": [
+          {"valid": 1, "order": 40, "instruction": 5447715, "privilege": 3, "pc_before": 768, "pc_after": 772, "rs1_addr": 6, "rs1_value": 512, "rs2_addr": 5, "rs2_value": 287454020, "retired": 1, "mem_valid": 1, "mem_address": 512, "mem_write_mask": 15, "mem_write_data": 287454020},
+          {}
+        ]
+      }
+    },
+    {
+      "name": "lane_aligned_load",
+      "expected_order": 50,
+      "next_order": 51,
+      "packet": {
+        "slots": [
+          {"valid": 1, "order": 50, "instruction": 2298755, "privilege": 3, "pc_before": 1024, "pc_after": 1028, "rs1_addr": 6, "rs1_value": 512, "rd_addr": 7, "rd_value": 4294945741, "rd_write_mask": 4294967295, "retired": 1, "mem_valid": 1, "mem_address": 514, "mem_read_mask": 12, "mem_read_data": 2882338816},
+          {}
+        ]
+      }
+    },
+    {
+      "name": "csr_read_modify_write",
+      "expected_order": 60,
+      "next_order": 61,
+      "packet": {
+        "slots": [
+          {"valid": 1, "order": 60, "instruction": 805511923, "privilege": 3, "pc_before": 1280, "pc_after": 1284, "rs1_addr": 6, "rs1_value": 136, "rd_addr": 5, "rd_value": 6144, "rd_write_mask": 4294967295, "retired": 1, "csr_effects": [{"address": 768, "old_value": 6144, "new_value": 6280, "read_mask": 4294967295, "write_mask": 136, "mask_reason": "instruction"}]},
+          {}
+        ]
+      }
+    }
+  ],
+  "invalid_cases": [
+    {
+      "name": "slot_one_without_slot_zero",
+      "error": "slot 1",
+      "expected_order": 70,
+      "packet": {"slots": [{}, {"valid": 1, "order": 70, "instruction": 19, "privilege": 3, "pc_before": 0, "pc_after": 4, "retired": 1}]}
+    },
+    {
+      "name": "skipped_order",
+      "error": "globally contiguous",
+      "expected_order": 70,
+      "packet": {"slots": [{"valid": 1, "order": 71, "instruction": 19, "privilege": 3, "pc_before": 0, "pc_after": 4, "retired": 1}, {}]}
+    },
+    {
+      "name": "unknown_csr_mask_reason",
+      "error": "unknown CSR mask reason",
+      "expected_order": 70,
+      "packet": {"slots": [{"valid": 1, "order": 70, "instruction": 805511923, "privilege": 3, "pc_before": 0, "pc_after": 4, "retired": 1, "csr_effects": [{"address": 768, "old_value": 6144, "new_value": 6144, "read_mask": 4294967295, "write_mask": 136, "mask_reason": "unreviewed"}]}, {}]}
+    },
+    {
+      "name": "bad_memory_lane",
+      "error": "lane convention",
+      "expected_order": 70,
+      "packet": {"slots": [{"valid": 1, "order": 70, "instruction": 2298755, "privilege": 3, "pc_before": 0, "pc_after": 4, "rd_addr": 7, "rd_value": 1, "rd_write_mask": 4294967295, "retired": 1, "mem_valid": 1, "mem_address": 514, "mem_read_mask": 3, "mem_read_data": 1}, {}]}
+    },
+    {
+      "name": "trap_marked_retired",
+      "error": "either retired or trapped",
+      "expected_order": 70,
+      "packet": {"slots": [{"valid": 1, "order": 70, "instruction": 19, "privilege": 3, "pc_before": 0, "pc_after": 256, "trap": 1, "retired": 1}, {}]}
+    }
+  ]
+}
