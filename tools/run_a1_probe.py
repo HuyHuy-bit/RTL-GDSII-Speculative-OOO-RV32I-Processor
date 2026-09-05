@@ -81,7 +81,7 @@ def mutations() -> None:
         print(f"A1 mutation {name}: PASS (fault detected)", flush=True)
 
 
-def synthesize(suite: Path) -> dict:
+def verify_synthesis_suite(suite: Path) -> str:
     lock = json.loads((ROOT / "config/synthesis.lock").read_text(encoding="utf-8"))
     for filename, expected in lock["sha256"].items():
         if digest(suite / filename) != expected:
@@ -90,6 +90,11 @@ def synthesize(suite: Path) -> dict:
     version = run([yosys, "--version"], OUT / "synthesis_version.log").strip()
     if version != lock["yosys_version"]:
         raise RuntimeError("Yosys does not match config/synthesis.lock")
+    return yosys
+
+
+def synthesize(suite: Path) -> dict:
+    yosys = verify_synthesis_suite(suite)
     metrics = {}
     for top, sources, expected_bits in (
         ("prf_4r2w", SOURCES[:1], 2016),
@@ -136,13 +141,15 @@ def main() -> int:
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     receipt_path = OUT / ("synthesis_receipt.json" if args.synth else "rtl_receipt.json")
+    if args.mutations:
+        receipt_path = receipt_path.with_name(receipt_path.stem + "_mutations.json")
     receipt_path.unlink(missing_ok=True)
     lock = json.loads((ROOT / "config/toolchain.lock").read_text())
     expected = next(tool["expected_first_line"] for tool in lock["tools"] if tool["name"] == "verilator")
     if run(["verilator", "--version"], OUT / "verilator_version.log").strip() != expected:
         raise RuntimeError("Verilator does not match config/toolchain.lock")
     inputs = SOURCES + ["verif/unit/a1_backend_probe_tb.cpp", "tools/run_a1_probe.py",
-                       "config/toolchain.lock", "config/synthesis.lock"]
+                       "config/toolchain.lock", "config/synthesis.lock", "config/prf_contract.json"]
     receipt = {"schema": 1, "inputs_sha256": {path: digest(ROOT / path) for path in inputs},
                "timing_evaluated": False, "cell_library": None,
                "scope": "Combinational candidate allocation and age-ordered greedy issue with PRF",
@@ -159,6 +166,14 @@ def main() -> int:
     if args.mutations:
         mutations()
         receipt["mutations_detected"] = ["duplicate_issue", "unaccepted_wakeup"]
+    simulation_dir = OUT / ("mapped_sim" if args.synth else "rtl_sim")
+    artifacts = [simulation_dir / f"seed_{seed}.log" for seed in SEEDS]
+    if args.synth:
+        artifacts += [OUT / top / "mapped.json" for top in receipt["synthesis"]]
+        artifacts += [OUT / top / "mapped.v" for top in receipt["synthesis"]]
+    if args.mutations:
+        artifacts += [OUT / "mutations" / name / "check.log" for name in receipt["mutations_detected"]]
+    receipt["artifacts_sha256"] = {str(path.relative_to(ROOT)): digest(path) for path in artifacts}
     receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     return 0
 

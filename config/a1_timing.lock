@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "opensta": {
+    "version": "2.0.17",
+    "package": "0~20191111gitc018cb2+dfsg-1build1",
+    "license": "GPL-3.0-or-later",
+    "source_revision": "c018cb2",
+    "source_package_url": "https://archive.ubuntu.com/ubuntu/pool/universe/o/opensta/",
+    "executable": "opensta/usr/bin/sta"
+  },
+  "library": {
+    "name": "sky130_fd_sc_hd",
+    "corner": "tt_025C_1v80",
+    "flow_repository": "https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts",
+    "flow_revision": "68cc9bc974502b4786a68e9f51a092e0fcb56e82",
+    "upstream_repository": "https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd",
+    "upstream_license_revision": "ac7fb61f06e6470b94e8afdf7c25268f62fbd7b1",
+    "license": "Apache-2.0",
+    "path": "sky130_fd_sc_hd__tt_025C_1v80.lib",
+    "modifications": "none"
+  },
+  "downloads": {
+    "opensta.deb": {
+      "url": "https://archive.ubuntu.com/ubuntu/pool/universe/o/opensta/opensta_0~20191111gitc018cb2+dfsg-1build1_amd64.deb",
+      "sha256": "b1272a4816bc2c67098872f39820f27b4dddf640205e09a31444c71c9fe41e9e"
+    },
+    "sky130_fd_sc_hd__tt_025C_1v80.lib": {
+      "url": "https://raw.githubusercontent.com/The-OpenROAD-Project/OpenROAD-flow-scripts/68cc9bc974502b4786a68e9f51a092e0fcb56e82/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib",
+      "sha256": "ec0e1067a35c8bf20b11e58d1e8ac53326067e4dac84a125cc1b917a3518d0d9"
+    },
+    "sky130_LICENSE": {
+      "url": "https://raw.githubusercontent.com/google/skywater-pdk-libs-sky130_fd_sc_hd/ac7fb61f06e6470b94e8afdf7c25268f62fbd7b1/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    }
+  },
+  "installed_sha256": {
+    "opensta/usr/bin/sta": "9630070fdbcfd2a92a9d0dc6b6e5480f7be8e216b720f1fb32f447fb4cedc2ff",
+    "opensta/usr/share/doc/opensta/copyright": "9732dd71f991c91817aee3c327a6316787a09996c83c3265a8f8c8f9b96057b7"
+  }
+}

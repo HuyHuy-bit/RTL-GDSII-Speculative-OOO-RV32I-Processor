@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
 from pathlib import Path
 import resource
+import re
 import subprocess
 
 
@@ -69,6 +71,12 @@ def main() -> int:
     args = parser.parse_args()
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     OUT.mkdir(parents=True, exist_ok=True)
+    receipt_path = OUT / ("mutation_receipt.json" if args.mutations else "receipt.json")
+    receipt_path.unlink(missing_ok=True)
+    inputs = ["rtl/backend/prf_4r2w.sv", "verif/unit/prf_4r2w_tb.cpp",
+              "tools/run_prf_check.py", "config/toolchain.lock", "config/prf_contract.json"]
+    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+    receipt = {"schema": 1, "inputs_sha256": {p: digest(ROOT / p) for p in inputs}, "simulation": []}
     lock = json.loads((ROOT / "config/toolchain.lock").read_text(encoding="utf-8"))
     tool = next(item for item in lock["tools"] if item["name"] == "verilator")
     version = run(["verilator", "--version"], "version.log").strip()
@@ -82,14 +90,23 @@ def main() -> int:
         output = run([
             executable, str(seed), "+verilator+rand+reset+2", f"+verilator+seed+{seed}",
         ], f"seed_{seed}.log")
-        if "PRF PASS" not in output:
+        match = re.search(rf"PRF PASS seed={seed} cycles=(\d+) reads=(\d+) bypass_pairs=8/8", output)
+        if not match:
             raise RuntimeError("PRF simulation exited without its completion marker")
+        receipt["simulation"].append({"seed": seed, "cycles": int(match[1]), "reads": int(match[2])})
         print(output.strip())
     run([executable, "--duplicate-write"], "duplicate_write.log",
         expected_failure="PRF_DUPLICATE_WRITE")
     print("PRF duplicate-write assertion: PASS (injected collision rejected)")
+    receipt["duplicate_write_rejected"] = True
     if args.mutations:
         check_mutations(ROOT / rtl)
+        receipt["mutations_detected"] = ["bypass_lane1", "reset_gate"]
+    logs = [f"seed_{seed}.log" for seed in (1, 42, 20260905)] + ["duplicate_write.log"]
+    if args.mutations:
+        logs += ["bypass_lane1.log", "reset_gate.log"]
+    receipt["artifacts_sha256"] = {str((OUT / p).relative_to(ROOT)): digest(OUT / p) for p in logs}
+    receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
     return 0
 
 

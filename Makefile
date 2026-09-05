@@ -5,6 +5,8 @@ ACT4_SAIL ?= out/deps/sail-riscv-0.10/bin/sail_riscv_sim
 OSS_CAD_SUITE ?= $(HOME)/tools/oss-cad-suite-20260905/oss-cad-suite
 
 .PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check act4-check act4-upstream-check prf-check prf-mutation-check a1-probe-check a1-synth-check check-fast check nightly reference-check
+.PHONY: a1-timing-fetch a1-timing-check
+.PHONY: a1-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -51,6 +53,19 @@ a1-probe-check:
 
 a1-synth-check:
 	@python3 tools/run_a1_probe.py --synth --suite "$(OSS_CAD_SUITE)"
+
+a1-timing-fetch:
+	@python3 tools/fetch_a1_timing.py
+
+a1-timing-check:
+	@python3 tools/run_a1_timing.py --suite "$(OSS_CAD_SUITE)"
+
+a1-check:
+	@python3 -c 'from pathlib import Path; Path("out/a1/acceptance.json").unlink(missing_ok=True)'
+	@$(MAKE) --no-print-directory prf-mutation-check
+	@python3 tools/run_a1_probe.py --mutations
+	@$(MAKE) --no-print-directory a1-synth-check a1-timing-check
+	@python3 tools/check_a1.py --self-test
 
 check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check
 	@python3 tools/check_s0.py

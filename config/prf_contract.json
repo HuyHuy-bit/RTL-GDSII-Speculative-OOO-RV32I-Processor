@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "profile": "a1-flop-mux-combinational",
+  "registers": 64,
+  "data_bits": 32,
+  "read_ports": 4,
+  "write_ports": 2,
+  "read_latency_cycles": 0,
+  "write_edge": "rising",
+  "lane_order": "lane_zero_in_low_slice",
+  "zero_register": "p0_has_no_storage_and_reads_zero",
+  "payload_reset": "uninitialized_at_startup_preserved_on_reset",
+  "writeback": "accepted_only_same_cycle_read_bypass",
+  "duplicate_nonzero_write": "illegal_asserted",
+  "reset": "suppress_writes_and_bypass",
+  "integration": {
+    "readiness_owner": "backend_control",
+    "read_rule": "consume_nonzero_payload_only_when_ready_or_matching_accepted_writeback",
+    "recovery_owner": "backend_control_filters_killed_and_stale_writebacks_before_acceptance",
+    "issue_slot_order": "oldest_first_supplied_by_future_IQ",
+    "issue_policy": "port_zero_first_then_oldest_eligible_unchosen_for_port_one"
+  },
+  "physical_gate": "PHY0",
+  "physical_work_remaining": [
+    "max_capacitance",
+    "max_fanout",
+    "multi_corner_timing",
+    "placement_clock_tree_and_routing",
+    "full_backend_and_ALU_feedback_timing"
+  ],
+  "reopen_if": [
+    "PRF_shape_or_accepted_writeback_semantics_change",
+    "integrated_issue_read_execute_path_exceeds_its_cycle_budget",
+    "target_mapping_cannot_meet_area_or_electrical_constraints"
+  ],
+  "acceptance": {
+    "timing_intent": "config/a1_timing.json",
+    "corner": "tt_025C_1v80",
+    "maximum_exploratory_period_ns": 20.0,
+    "minimum_probe_cases_per_seed": 276823,
+    "minimum_prf_cycles_per_seed": 16157,
+    "seeds": [1, 42, 20260905]
+  }
+}
