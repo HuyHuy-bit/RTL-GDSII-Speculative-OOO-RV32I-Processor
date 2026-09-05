@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "name": "spike_verilator_lockstep_smoke_v0",
+  "program": "sw/tests/lockstep_hello.S",
+  "target_events": 5,
+  "spike_boot_events": 5,
+  "spike_memory_base": "0x80000000",
+  "address_mapping": "Subtract spike_memory_base from program PCs before comparison.",
+  "scope": "Toolchain, adapter, event packing, comparator, and mutation smoke only.",
+  "limitation": "The pinned stock Spike reserves low addresses, so this smoke relocates BRAM without claiming full platform lockstep."
+}

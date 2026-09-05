@@ -26,6 +26,15 @@
       "revision": "c992aa61fdfe0846c5ed90324c596202a1c69b76",
       "document": "docs/source/rvfi.rst",
       "accessed": "2026-09-04"
+    },
+    {
+      "name": "riscv-isa-sim",
+      "kind": "git-and-local-binary",
+      "url": "https://github.com/riscv-software-src/riscv-isa-sim.git",
+      "revision": "55b4658dbf574ba0b714083ec436ce2cb5be1998",
+      "tree": "9c3e8dd72033216e5af34237764736ad12d0a689",
+      "binary_sha256": "7cf474e373dfc1259a3004990ff44986025e952f1c8580e9413bed532caa53b9",
+      "accessed": "2026-09-04"
     }
   ]
 }

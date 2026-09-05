@@ -51,6 +51,20 @@
       "required": true
     },
     {
+      "name": "riscv-objcopy",
+      "command": "riscv64-unknown-elf-objcopy",
+      "args": ["--version"],
+      "expected_first_line": "GNU objcopy () 2.35.1",
+      "required": true
+    },
+    {
+      "name": "spike",
+      "command": "../riscv-isa-sim/build/spike",
+      "args": ["--help"],
+      "expected_first_line": "Spike RISC-V ISA Simulator 1.1.1-dev",
+      "required": true
+    },
+    {
       "name": "yosys",
       "command": "yosys",
       "args": ["--version"],
