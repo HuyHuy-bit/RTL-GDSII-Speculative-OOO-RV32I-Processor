@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "references": [
+    {
+      "name": "rv32i-pipeline",
+      "kind": "git",
+      "url": "https://github.com/HuyHuy-bit/5-stage-pipeline-rv32i-datapath.git",
+      "revision": "3d5a32b0e8513481918a6250c103e9cb91aa2a37",
+      "tree": "514bb6d13e4e06b96ab3071111857aa1ef578919",
+      "license": "MIT",
+      "license_sha256": "3eb98092e15f4c32108cbba8a9ee3f0424573977b313bd2e26af4ceba070418e",
+      "accessed": "2026-09-04"
+    },
+    {
+      "name": "Speculative_OOO_RISCV_5Month_Plan.docx",
+      "kind": "private-design-input",
+      "sha256": "c588819ba3ae893a3d0b7c7c37b2526fcd753db6bd96c2bf819513bc1745d252",
+      "size_bytes": 20631,
+      "redistribution": "private; source file is not required to build or review the repository",
+      "accessed": "2026-09-04"
+    }
+  ]
+}

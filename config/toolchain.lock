@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "profile": "s0-host",
+  "observed_utc": "2026-09-04",
+  "host": {
+    "os": "Ubuntu 22.04.5 LTS",
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "architecture": "x86_64"
+  },
+  "tools": [
+    {
+      "name": "git",
+      "command": "git",
+      "args": ["--version"],
+      "expected_first_line": "git version 2.34.1",
+      "required": true
+    },
+    {
+      "name": "make",
+      "command": "make",
+      "args": ["--version"],
+      "expected_first_line": "GNU Make 4.3",
+      "required": true
+    },
+    {
+      "name": "python",
+      "command": "python3",
+      "args": ["--version"],
+      "expected_first_line": "Python 3.10.12",
+      "required": true
+    },
+    {
+      "name": "verilator",
+      "command": "verilator",
+      "args": ["--version"],
+      "expected_first_line": "Verilator 5.048 2026-04-26 rev v5.048-56-gc233a3905",
+      "required": true
+    },
+    {
+      "name": "gtkwave",
+      "command": "gtkwave",
+      "args": ["--version"],
+      "expected_first_line": "GTKWave Analyzer v3.3.104 (w)1999-2020 BSI",
+      "required": false
+    },
+    {
+      "name": "riscv-gcc",
+      "command": "riscv64-unknown-elf-gcc",
+      "args": ["--version"],
+      "expected_first_line": "riscv64-unknown-elf-gcc () 10.2.0",
+      "required": true
+    },
+    {
+      "name": "yosys",
+      "command": "yosys",
+      "args": ["--version"],
+      "required": false
+    },
+    {
+      "name": "sby",
+      "command": "sby",
+      "args": ["--version"],
+      "required": false
+    },
+    {
+      "name": "vivado",
+      "command": "vivado",
+      "args": ["-version"],
+      "required": false
+    }
+  ]
+}
