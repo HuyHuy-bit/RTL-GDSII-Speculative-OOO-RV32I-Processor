@@ -2,8 +2,9 @@ PROFILE ?= s0-host
 LOCKSTEP_SPIKE ?= ../riscv-isa-sim/build/spike
 ACT4_CHECKOUT ?= out/deps/riscv-arch-test-4.0.0
 ACT4_SAIL ?= out/deps/sail-riscv-0.10/bin/sail_riscv_sim
+OSS_CAD_SUITE ?= $(HOME)/tools/oss-cad-suite-20260905/oss-cad-suite
 
-.PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check act4-check act4-upstream-check prf-check prf-mutation-check check-fast check nightly reference-check
+.PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check act4-check act4-upstream-check prf-check prf-mutation-check a1-probe-check a1-synth-check check-fast check nightly reference-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -45,7 +46,13 @@ prf-check:
 prf-mutation-check:
 	@python3 tools/run_prf_check.py --mutations
 
-check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check
+a1-probe-check:
+	@python3 tools/run_a1_probe.py
+
+a1-synth-check:
+	@python3 tools/run_a1_probe.py --synth --suite "$(OSS_CAD_SUITE)"
+
+check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check
 	@python3 tools/check_s0.py
 	@git diff --check
 

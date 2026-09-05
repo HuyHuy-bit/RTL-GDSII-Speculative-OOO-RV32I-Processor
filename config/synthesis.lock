@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "suite": "oss-cad-suite-linux-x64-20260905",
+  "yosys_version": "Yosys 0.68+195 (git sha1 435977e97-dirty, Release, Clang /usr/bin/clang++ 21.1.8)",
+  "mapping": "Yosys synth default ABC generic gates; no liberty or timing constraints",
+  "sha256": {
+    "share/manifest.json": "dcfd044ae9f826c5c32b83d2112e77a2f8389ecf1fe1789b3de85e7831ffe28e",
+    "bin/yosys": "7c3e3396b38c129dd7485be5a0a0f0da8e495a94c8fd486059e3bea043a588d6",
+    "libexec/yosys": "1ed3600e5edb4d864d1832f4826fd11b3dbf848d3280cbba3489cd6696c6fe18",
+    "bin/yosys-abc": "9a47b87ed0f705246d61b289669c5540a42f31203da2c7971e35baed9fdfb4cf",
+    "libexec/yosys-abc": "4ab5cc1910db09801b3f147b03caabee75dad58ed50a051e4e803cc3625e9021",
+    "share/yosys/plugins/slang.so": "e026e608add15ebdf0820e6e01069b1e6cfb54e3deead702f7b54fae24e87826"
+  }
+}
