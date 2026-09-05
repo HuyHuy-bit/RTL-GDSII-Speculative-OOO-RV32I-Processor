@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "name": "single_outstanding_memory_v0",
+  "xlen": 32,
+  "line_bytes": 32,
+  "transaction_id_bits": 4,
+  "outstanding_per_port": 1,
+  "minimum_response_latency_cycles": 1,
+  "same_cycle_turnover": false,
+  "ports": {
+    "instruction": {"read": true, "write": false, "cached_line": true, "uncached": false},
+    "data": {"read": true, "write": true, "cached_line": true, "uncached": true}
+  },
+  "request_fields": [
+    {"name": "transaction_id", "width": 4},
+    {"name": "write", "width": 1},
+    {"name": "uncached", "width": 1},
+    {"name": "address", "width": 32},
+    {"name": "uncached_size", "width": 2},
+    {"name": "line_write_data", "width": 256},
+    {"name": "line_write_mask", "width": 32},
+    {"name": "uncached_write_data", "width": 32},
+    {"name": "uncached_write_strobe", "width": 4}
+  ],
+  "response_fields": [
+    {"name": "transaction_id", "width": 4},
+    {"name": "status", "width": 2},
+    {"name": "line_read_data", "width": 256},
+    {"name": "uncached_read_data", "width": 32}
+  ],
+  "response_status": {
+    "ok": 0,
+    "access_fault": 1,
+    "protocol_error": 2
+  },
+  "response_status_effects": {
+    "ok": "Complete the live request normally.",
+    "access_fault": "Complete the live request with an architectural access fault.",
+    "protocol_error": "Raise the sticky platform-fatal path instead of an architectural completion."
+  },
+  "uncached_size_encoding": {
+    "byte": 0,
+    "halfword": 1,
+    "word": 2
+  },
+  "completion_points": {
+    "data_order": "A write response handshake confirms the write reached the target data-order point.",
+    "instruction_visibility": "After prior data writes respond and both ports drain, a later instruction read observes those writes."
+  },
+  "request_hold_rule": "Once request valid is asserted, valid and payload remain stable through the request handshake.",
+  "response_hold_rule": "Once response valid is asserted, valid and payload remain stable through the response handshake.",
+  "id_rule": "An accepted request owns its transaction ID until its response handshake; the ID is not reused while owned.",
+  "reset_rule": "Reset clears channel ownership and the target suppresses every response belonging to pre-reset traffic.",
+  "drop_rule": "An accepted cached read may be marked for discard but owns its slot and transaction ID until its response handshake."
+}
