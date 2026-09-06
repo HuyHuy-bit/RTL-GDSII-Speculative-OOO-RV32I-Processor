@@ -6,9 +6,9 @@ SECTIONS
   . = 0x00000000;
   .text.init : { *(.text.init) }
   .text.rvtest : { *(.text.rvtest) *(.text.rvtest.*) }
-  . = ALIGN(0x4000);
+  . = ALIGN(16);
   .data : { *(.data) }
-  . = ALIGN(0x1000);
+  . = ALIGN(16);
   .text.rvmodel : { *(.text.rvmodel) *(.text.rvmodel.*) *(.text) *(.text.*) }
   . = ALIGN(8);
   .tohost : { *(.tohost) }

@@ -87,7 +87,9 @@ def check_harness() -> tuple[dict, dict]:
         and params["M_MODE_ENDIANNESS"] == platform["isa"]["endianness"],
         "UDB base differs",
     )
-    require(params["ARCH_ID_VALUE"] == integer(csr(platform, "marchid")["reset"]), "UDB marchid differs")
+    marchid = integer(csr(platform, "marchid")["reset"])
+    require(params["MARCHID_IMPLEMENTED"] == (marchid != 0), "UDB marchid implementation differs")
+    require(params.get("ARCH_ID_VALUE", 0) == marchid, "UDB marchid differs")
     require(params["IMP_ID_VALUE"] == integer(csr(platform, "mimpid")["reset"]), "UDB mimpid differs")
     require(
         params["VENDOR_ID_BANK"] == 0
@@ -132,10 +134,11 @@ def check_harness() -> tuple[dict, dict]:
         "RVMODEL_HALT_PASS" in macros and "RVMODEL_HALT_FAIL" in macros and "tohost" in macros,
         "ACT termination macros differ",
     )
-    require(
-        "RVMODEL_SET_MEXT_INT" not in macros and "RVMODEL_MTIME_ADDRESS" not in macros,
-        "disabled interrupt feature is present",
-    )
+    require("RVMODEL_MTIME_ADDRESS" not in macros, "disabled timer feature is present")
+    for operation in ("SET", "CLR"):
+        for interrupt in ("MEXT", "MSW", "SEXT", "SSW"):
+            require(f"#define RVMODEL_{operation}_{interrupt}_INT(_R1, _R2) j rvmodel_halt_fail;" in macros,
+                    "unsupported interrupt hook must fail the test")
     svh = (harness / "rvtest_config.svh").read_text(encoding="utf-8")
     require(f"`define XLEN{platform['xlen']}" in svh, "ACT coverage XLEN differs")
     require("RVMODEL_NUM_PMPS 0" in (harness / "rvtest_config.h").read_text(encoding="utf-8"), "ACT PMP count differs")

@@ -48,6 +48,17 @@ def make_header():
     if not path.exists() or path.read_text() != content: path.write_text(content)
 
 
+def build_core(config):
+    OUT.mkdir(parents=True, exist_ok=True)
+    make_header()
+    flags = ['--Wall','-Wno-UNUSEDPARAM','-Wno-UNUSEDSIGNAL','--assert','--top-module',config['top']]
+    run(['verilator','--lint-only',*flags,*config['sources']], 'lint')
+    run(['verilator','--cc','--exe','--build','--build-jobs','2',*flags,'--x-initial','unique',
+         '--Mdir',OUT/'obj_dir','-CFLAGS',f'-std=c++17 -Wall -Wextra -Werror -I{OUT}',
+         *config['sources'],ROOT/'verif/core/single_lane_tb.cpp','-o','core_check'], 'build')
+    return OUT/'obj_dir/core_check'
+
+
 def check_trace(output, image, mode):
     actual = []
     expected = []
@@ -110,11 +121,8 @@ def main():
         run(['verilator','--binary','--timing','--build-jobs','2','--assert','--Wall','-Wno-UNUSEDPARAM','-Wno-UNUSEDSIGNAL',
              '--top-module',bench,'--Mdir',OUT/bench,*config['sources'][:4],*extra,f'verif/core/{bench}.sv','-o','unit_check'],bench+'_build')
         print(run([OUT/bench/'unit_check'],bench).splitlines()[0],flush=True)
+    build_core(config)
     flags = ['--Wall','-Wno-UNUSEDPARAM','-Wno-UNUSEDSIGNAL','--assert','--top-module',config['top']]
-    run(['verilator','--lint-only',*flags,*config['sources']], 'lint')
-    run(['verilator','--cc','--exe','--build','--build-jobs','2',*flags,'--x-initial','unique',
-         '--Mdir',OUT/'obj_dir','-CFLAGS',f'-std=c++17 -Wall -Wextra -Werror -I{OUT}',
-         *config['sources'],ROOT/'verif/core/single_lane_tb.cpp','-o','core_check'], 'build')
     results = []
     cases = [(seed,'normal',1600) for seed in config['seeds']]
     cases += [(42,'stall_store',300)]

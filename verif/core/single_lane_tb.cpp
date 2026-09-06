@@ -43,6 +43,10 @@ int main(int argc, char** argv) {
         std::mt19937 random(std::stoul(argv[2]));
         unsigned target = std::stoul(argv[3]);
         std::string mode = argc > 4 ? argv[4] : "normal";
+        bool act4 = mode == "act4";
+        require(!act4 || argc > 5, "ACT4 tohost address required");
+        unsigned tohost = act4 ? std::stoul(argv[5], nullptr, 0) : 0;
+        require(!act4 || (!(tohost & 7) && tohost <= 65528), "invalid tohost address");
         Vsingle_lane_core dut;
         Transaction instruction, data;
         unsigned events = 0, cycle = 0, first_valid = 0, committed_stores = 0;
@@ -91,9 +95,11 @@ int main(int argc, char** argv) {
             tx.uncached = get(request, REQ_UNCACHED, 1);
             tx.write = get(request, REQ_WRITE, 1);
             tx.size = get(request, REQ_UNCACHED_SIZE, 2);
-            std::cout << (is_data ? "DREQ" : "IREQ");
-            for (unsigned w = 0; w < REQUEST_WORDS; ++w) std::cout << ' ' << std::hex << request[w];
-            std::cout << std::dec << '\n';
+            if (!act4) {
+                std::cout << (is_data ? "DREQ" : "IREQ");
+                for (unsigned w = 0; w < REQUEST_WORDS; ++w) std::cout << ' ' << std::hex << request[w];
+                std::cout << std::dec << '\n';
+            }
             require(is_data || (!tx.write && !tx.uncached), "invalid instruction request");
             require(tx.uncached || !(tx.address & 31), "unaligned line request");
             tx.mask = get(request, tx.uncached ? REQ_UNCACHED_WRITE_STROBE : REQ_LINE_WRITE_MASK, tx.uncached ? 4 : 32);
@@ -156,21 +162,29 @@ int main(int argc, char** argv) {
             hold(dut.commit_o, held_event, holding_event, valid, dut.commit_ready_i);
             if (valid && dut.commit_ready_i) {
                 if (get(dut.commit_o, EV_MEM_WRITE_MASK, 4)) ++committed_stores;
-                std::cout << "EVENT " << std::dec << cycle << ' ' << first_valid;
-                for (unsigned i = 0; i < COMMIT_WORDS; ++i) std::cout << ' ' << std::hex << dut.commit_o[i];
-                std::cout << std::dec << '\n';
+                if (!act4) {
+                    std::cout << "EVENT " << std::dec << cycle << ' ' << first_valid;
+                    for (unsigned i = 0; i < COMMIT_WORDS; ++i) std::cout << ' ' << std::hex << dut.commit_o[i];
+                    std::cout << std::dec << '\n';
+                }
                 ++events;
             }
             if (dut.instruction_response_valid_i && dut.instruction_response_ready_o) {
-                std::cout << "IRSP";
-                for (unsigned w = 0; w < RESPONSE_WORDS; ++w) std::cout << ' ' << std::hex << dut.instruction_response_i[w];
-                std::cout << std::dec << '\n';
+                if (!act4) {
+                    std::cout << "IRSP";
+                    for (unsigned w = 0; w < RESPONSE_WORDS; ++w) std::cout << ' ' << std::hex << dut.instruction_response_i[w];
+                    std::cout << std::dec << '\n';
+                }
                 instruction.pending = false;
             }
+            bool store_drained = false;
             if (dut.data_response_valid_i && dut.data_response_ready_o) {
-                std::cout << "DRSP";
-                for (unsigned w = 0; w < RESPONSE_WORDS; ++w) std::cout << ' ' << std::hex << dut.data_response_i[w];
-                std::cout << std::dec << '\n';
+                store_drained = data.write;
+                if (!act4) {
+                    std::cout << "DRSP";
+                    for (unsigned w = 0; w < RESPONSE_WORDS; ++w) std::cout << ' ' << std::hex << dut.data_response_i[w];
+                    std::cout << std::dec << '\n';
+                }
                 data.pending = false;
             }
             if (instruction.pending && instruction.delay) --instruction.delay;
@@ -188,7 +202,18 @@ int main(int argc, char** argv) {
                 std::cout << "FATAL " << events << '\n';
                 return 0;
             }
+            if (act4 && store_drained) {
+                uint64_t status = 0;
+                for (unsigned lane = 0; lane < 8; ++lane) status |= uint64_t(memory[tohost+lane]) << (8*lane);
+                if (status) {
+                    require(status == 1, "ACT4 FAIL tohost=" + std::to_string(status));
+                    require(committed_stores == 0, "ACT4 halt before store drain");
+                    std::cout << "ACT4 PASS events=" << events << " cycles=" << cycle+1 << '\n';
+                    return 0;
+                }
+            }
             if (events >= target) {
+                require(!act4, "ACT4 instruction limit without tohost completion");
                 require(!(mode.rfind("reset_", 0) == 0) || reset_done, "reset scenario did not fire");
                 std::cout << "CORE PASS events=" << events << " cycles=" << cycle+1 << '\n';
                 return 0;

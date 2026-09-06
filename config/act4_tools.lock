@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "assets": [
+    {
+      "name": "gcc",
+      "url": "https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2025.07.16/riscv64-elf-ubuntu-22.04-gcc-nightly-2025.07.16-nightly.tar.xz",
+      "sha256": "ac2f8e84071c8bfc6b8a7ff1c4023c840e43ef6ed5072394d80a050907b9c8cb"
+    },
+    {
+      "name": "mise",
+      "url": "https://github.com/jdx/mise/releases/download/v2026.9.1/mise-v2026.9.1-linux-x64.tar.gz",
+      "sha256": "063dda9149ab6be53da877c2d176afe0eac68e64cf8ca295bd0528720701c65d"
+    }
+  ]
+}

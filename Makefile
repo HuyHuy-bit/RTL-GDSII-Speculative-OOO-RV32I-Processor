@@ -8,6 +8,7 @@ OSS_CAD_SUITE ?= $(HOME)/tools/oss-cad-suite-20260905/oss-cad-suite
 .PHONY: a1-timing-fetch a1-timing-check
 .PHONY: a1-check
 .PHONY: single-lane-check single-lane-synth-check
+.PHONY: act4-tools act4-core-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -39,6 +40,13 @@ lockstep-check:
 
 act4-check:
 	@python3 tools/check_act4.py
+	@python3 -m unittest -v tests/test_act4_elf.py
+
+act4-tools:
+	@python3 tools/act4_tools.py --checkout "$(ACT4_CHECKOUT)"
+
+act4-core-check:
+	@python3 tools/run_act4_core.py --checkout "$(ACT4_CHECKOUT)" --sail "$(ACT4_SAIL)"
 
 act4-upstream-check:
 	@python3 tools/check_act4.py --checkout "$(ACT4_CHECKOUT)" --sail "$(ACT4_SAIL)"

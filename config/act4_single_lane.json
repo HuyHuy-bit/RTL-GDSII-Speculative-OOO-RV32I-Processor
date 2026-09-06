@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "profile": "tier_a_selected_act4",
+  "seeds": [1, 42, 20260906],
+  "instruction_limit": 250000,
+  "selected_tests": [
+    "rv32i/I/I-add-00.S",
+    "rv32i/I/I-sub-00.S",
+    "rv32i/I/I-sll-00.S",
+    "rv32i/I/I-slt-00.S",
+    "rv32i/I/I-lb-00.S",
+    "rv32i/I/I-lbu-00.S",
+    "rv32i/I/I-lh-00.S",
+    "rv32i/I/I-lhu-00.S",
+    "rv32i/I/I-lw-00.S",
+    "rv32i/I/I-sb-00.S",
+    "rv32i/I/I-sh-00.S",
+    "rv32i/I/I-sw-00.S",
+    "rv32i/Zicsr/Zicsr-csrrw-00.S",
+    "rv32i/Zicsr/Zicsr-csrrs-00.S",
+    "rv32i/Zicsr/Zicsr-csrrc-00.S",
+    "rv32i/Zicsr/Zicsr-csrrwi-00.S",
+    "rv32i/Zicsr/Zicsr-csrrsi-00.S",
+    "rv32i/Zicsr/Zicsr-csrrci-00.S",
+    "rv32i/Zifencei/Zifencei-fence.i-00.S"
+  ],
+  "deferred_tests": [
+    {
+      "test": "rv32i/I/I-beq-00.S",
+      "reason": "Unmodified ACT4 signature ELF needs 70672 bytes, exceeding the 65536-byte BRAM map. Directed branch checks remain in single-lane-check."
+    }
+  ],
+  "unexpected_skips_allowed": 0,
+  "tier_a_accepted": false
+}
