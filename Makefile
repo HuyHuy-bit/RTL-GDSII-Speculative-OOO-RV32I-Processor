@@ -9,6 +9,7 @@ OSS_CAD_SUITE ?= $(HOME)/tools/oss-cad-suite-20260905/oss-cad-suite
 .PHONY: a1-check
 .PHONY: single-lane-check single-lane-synth-check
 .PHONY: act4-tools act4-core-check
+.PHONY: sail-log-check sail-differential-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -79,10 +80,16 @@ a1-check:
 single-lane-check:
 	@python3 tools/run_single_lane.py
 
+sail-log-check:
+	@python3 -m unittest -v tests/test_sail_log.py
+
+sail-differential-check:
+	@python3 tools/run_sail_differential.py --sail "$(ACT4_SAIL)"
+
 single-lane-synth-check:
 	@python3 tools/run_single_lane.py --synth --mutations --suite "$(OSS_CAD_SUITE)"
 
-check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check single-lane-check
+check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check single-lane-check sail-log-check
 	@python3 tools/check_s0.py
 	@git diff --check
 
