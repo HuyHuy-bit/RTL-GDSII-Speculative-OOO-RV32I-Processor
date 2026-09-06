@@ -7,6 +7,7 @@ OSS_CAD_SUITE ?= $(HOME)/tools/oss-cad-suite-20260905/oss-cad-suite
 .PHONY: doctor platform-generate platform-check event-generate event-check memory-generate memory-check lockstep-check act4-check act4-upstream-check prf-check prf-mutation-check a1-probe-check a1-synth-check check-fast check nightly reference-check
 .PHONY: a1-timing-fetch a1-timing-check
 .PHONY: a1-check
+.PHONY: single-lane-check single-lane-synth-check
 
 doctor:
 	@python3 tools/doctor.py --lock config/toolchain.lock --profile "$(PROFILE)"
@@ -67,7 +68,13 @@ a1-check:
 	@$(MAKE) --no-print-directory a1-synth-check a1-timing-check
 	@python3 tools/check_a1.py --self-test
 
-check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check
+single-lane-check:
+	@python3 tools/run_single_lane.py
+
+single-lane-synth-check:
+	@python3 tools/run_single_lane.py --synth --mutations --suite "$(OSS_CAD_SUITE)"
+
+check-fast: platform-check event-check memory-check lockstep-check act4-check prf-check a1-probe-check single-lane-check
 	@python3 tools/check_s0.py
 	@git diff --check
 

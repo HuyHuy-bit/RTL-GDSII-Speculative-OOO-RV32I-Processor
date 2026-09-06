@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "profile": "single_lane_serialized_bringup",
+  "top": "single_lane_core",
+  "sources": [
+    "rtl/generated/platform_pkg.sv",
+    "rtl/generated/memory_protocol_pkg.sv",
+    "rtl/generated/commit_event_pkg.sv",
+    "rtl/core/single_lane_pkg.sv",
+    "rtl/backend/prf_4r2w.sv",
+    "rtl/frontend/fetch_single.sv",
+    "rtl/frontend/decode_single.sv",
+    "rtl/backend/rename_single.sv",
+    "rtl/backend/rob_single.sv",
+    "rtl/execute/execute_single.sv",
+    "rtl/core/csr_single.sv",
+    "rtl/core/single_lane_core.sv"
+  ],
+  "physical_registers": 64,
+  "rob_entries": 32,
+  "maximum_inflight_instructions": 1,
+  "retirement_slots_used": 1,
+  "store_policy": "retire_into_one_entry_buffer_then_drain_before_next_fetch",
+  "reset_policy": "target_cancels_pre_reset_responses; nonzero_GPR_payloads_unspecified",
+  "limitations": [
+    "no speculative execution",
+    "no interrupts or caches",
+    "not Tier A acceptance until ACT4 and broader architectural regression pass"
+  ],
+  "seeds": [
+    1,
+    42,
+    20260906
+  ]
+}
